@@ -5,6 +5,7 @@ import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import FastQuestion from './FastQuestion';
 import OpenAI from 'openai';
+import { prepareMessages } from './utils/contextManager';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -27,9 +28,11 @@ function ChatPage({ chatHistory, updateChatHistory }) {
     streamingMessageRef.current = '';
 
     try {
+      const preparedMessages = prepareMessages(chatHistory, message);
+
       const stream = await openai.chat.completions.create({
         model: 'gpt-4',
-        messages: [{ role: 'user', content: message }],
+        messages: preparedMessages,
         stream: true,
       });
 
@@ -115,7 +118,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
               <>
                 <FastQuestion
                   addMessage={addMessage}
-                  question="How to find the shortest path between 2 cities?"
+                  question="Write a python program to find diameter of a graph"
                 />
                 <FastQuestion
                   addMessage={addMessage}
