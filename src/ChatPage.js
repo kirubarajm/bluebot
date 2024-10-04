@@ -85,7 +85,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
         maxWidth: '100vw',
         overflowX: 'hidden',
         overflowY: 'hidden',
-        background: 'linear-gradient(to bottom, #264e31, #112a18)',
+        background: 'linear-gradient(to bottom, #1a3a5a, #0a1929)',
         color: '#f7f7f7',
       }}
     >

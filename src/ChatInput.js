@@ -48,7 +48,7 @@ function ChatInput({ addMessage, loading }) {
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: '20px',
-              backgroundColor: '#0c2113',
+              backgroundColor: '#0a1929',
               '& fieldset': {
                 borderRadius: '20px',
                 borderColor: 'transparent',
@@ -61,10 +61,10 @@ function ChatInput({ addMessage, loading }) {
               },
             },
             '& .MuiInputLabel-root': {
-              color: '#7a877e',
+              color: '#e0e0e0',
             },
             '& .MuiOutlinedInput-input': {
-              color: '#7a877e',
+              color: '#e0e0e0',
               paddingLeft: '8px',
               fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
             },
