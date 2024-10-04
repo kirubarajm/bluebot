@@ -25,7 +25,7 @@ function ChatAppBar() {
             fontWeight: 'bold',
           }}
         >
-          Blue Bot 1.0 - By Kirubaraj
+          Blue Bot 1.0
         </Typography>
       </Toolbar>
     </AppBar>

@@ -106,7 +106,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
           loading={loading}
         />
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
               sx={{
                 width: '50%',
@@ -115,7 +115,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
                 mb: '40px',
               }}
             >
-              {/* <>
+              <>
                 <FastQuestion
                   addMessage={addMessage}
                   question="What is Blue Yonder?"
@@ -128,9 +128,9 @@ function ChatPage({ chatHistory, updateChatHistory }) {
                   addMessage={addMessage}
                   question="What is ERP optimization?"
                 />
-              </> */}
+              </>
             </Box>
-          </Box>
+          </Box> */}
           <ChatInput addMessage={addMessage} loading={loading} />
         </Box>
       </Box>
