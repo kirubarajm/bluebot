@@ -15,14 +15,14 @@ function ChatAppBar() {
           alt="Logo"
           sx={{ height: '50px', mr: 2 }}
         />
-        <Typography 
-          variant="h6" 
-          component="div" 
-          sx={{ 
-            flexGrow: 1, 
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            flexGrow: 1,
             color: '#ffffff',
             fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
           }}
         >
           Blue Bot 1.0 - By Kirubaraj

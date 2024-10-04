@@ -7,17 +7,17 @@ import * as AdaptiveCards from 'adaptivecards';
 import { v4 as uuidv4 } from 'uuid';
 
 const hostConfig = {
-  fontFamily: "Segoe UI, Helvetica Neue, sans-serif",
+  fontFamily: 'Segoe UI, Helvetica Neue, sans-serif',
   containerStyles: {
     default: {
       foregroundColors: {
         default: {
-          default: "#ffffff",
-          subtle: "#cccccc",
+          default: '#ffffff',
+          subtle: '#cccccc',
         },
         accent: {
-          default: "#0078D7",
-          subtle: "#384259",
+          default: '#0078D7',
+          subtle: '#384259',
         },
       },
     },
@@ -27,40 +27,40 @@ const hostConfig = {
 const generateAdaptiveCard = (msg, isUser) => {
   const senderName = isUser ? 'You' : 'Blue Bot';
   const avatar = isUser ? profileAvatar : logo;
-  
+
   return {
-    type: "AdaptiveCard",
+    type: 'AdaptiveCard',
     body: [
       {
-        type: "Container",
+        type: 'Container',
         items: [
           {
-            type: "Image",
+            type: 'Image',
             url: avatar,
-            size: "Small",
-            style: "Person",
-            horizontalAlignment: isUser ? "Right" : "Left",
+            size: 'Small',
+            style: 'Person',
+            horizontalAlignment: isUser ? 'Right' : 'Left',
           },
           {
-            type: "TextBlock",
+            type: 'TextBlock',
             text: senderName,
-            weight: "Bolder",
+            weight: 'Bolder',
             wrap: true,
-            horizontalAlignment: isUser ? "Right" : "Left",
-            spacing: "Small",
+            horizontalAlignment: isUser ? 'Right' : 'Left',
+            spacing: 'Small',
           },
           {
-            type: "TextBlock",
+            type: 'TextBlock',
             text: msg.message,
             wrap: true,
-            horizontalAlignment: isUser ? "Right" : "Left",
+            horizontalAlignment: isUser ? 'Right' : 'Left',
           },
         ],
-        spacing: "Medium",
+        spacing: 'Medium',
       },
     ],
-    $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
-    version: "1.3",
+    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+    version: '1.3',
   };
 };
 
@@ -70,7 +70,7 @@ const AdaptiveCardRenderer = ({ card }) => {
   useEffect(() => {
     if (cardRef.current) {
       try {
-        cardRef.current.innerHTML = "";
+        cardRef.current.innerHTML = '';
 
         const adaptiveCard = new AdaptiveCards.AdaptiveCard();
         adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
@@ -78,8 +78,8 @@ const AdaptiveCardRenderer = ({ card }) => {
         const renderedCard = adaptiveCard.render();
         cardRef.current.appendChild(renderedCard);
       } catch (error) {
-        console.error("Adaptive Card rendering error:", error);
-        cardRef.current.innerHTML = "<p>Error rendering card.</p>";
+        console.error('Adaptive Card rendering error:', error);
+        cardRef.current.innerHTML = '<p>Error rendering card.</p>';
       }
     }
   }, [card]);
@@ -101,10 +101,7 @@ function MessageList({ messages, streamingMessage, loading }) {
     const adaptiveCard = generateAdaptiveCard(msg, isUser);
 
     return (
-      <Box
-        key={uuidv4()}
-        sx={{ mb: 4 }}
-      >
+      <Box key={uuidv4()} sx={{ mb: 4 }}>
         <AdaptiveCardRenderer card={adaptiveCard} />
       </Box>
     );
@@ -150,25 +147,28 @@ function MessageList({ messages, streamingMessage, loading }) {
               alt="No messages"
               style={{ width: '100px', height: '100px' }}
             />
-            <Typography 
-          variant="h5" 
-          component="div" 
-          sx={{ 
-            flexGrow: 1, 
-            color: '#ffffff',
-            fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
-            fontWeight: 'bold'
-          }}
-        >
-          How can I help you today ?
-        </Typography>
+            <Typography
+              variant="h5"
+              component="div"
+              sx={{
+                flexGrow: 1,
+                color: '#ffffff',
+                fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
+                fontWeight: 'bold',
+              }}
+            >
+              How can I help you today ?
+            </Typography>
           </Box>
         ) : (
           <>
             {memoizedMessages}
             {streamingMessage && (
               <Box sx={{ mb: 4 }}>
-                <StreamingMessage message={streamingMessage} loading={loading} />
+                <StreamingMessage
+                  message={streamingMessage}
+                  loading={loading}
+                />
               </Box>
             )}
           </>

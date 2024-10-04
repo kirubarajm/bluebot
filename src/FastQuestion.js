@@ -18,7 +18,7 @@ const FastQuestion = ({ addMessage, question }) => {
         color: '#fff', // Text color for better readability against the black background
         cursor: 'pointer', // Change cursor to pointer on hover
         fontWeight: 'bold',
-        fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif', 
+        fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
       }}
       onClick={handleClick}
     >

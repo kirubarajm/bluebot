@@ -5,17 +5,17 @@ import LoadingDots from './LoadingDots';
 import * as AdaptiveCards from 'adaptivecards';
 
 const hostConfig = {
-  fontFamily: "Segoe UI, Helvetica Neue, sans-serif",
+  fontFamily: 'Segoe UI, Helvetica Neue, sans-serif',
   containerStyles: {
     default: {
       foregroundColors: {
         default: {
-          default: "#ffffff",
-          subtle: "#cccccc",
+          default: '#ffffff',
+          subtle: '#cccccc',
         },
         accent: {
-          default: "#0078D7",
-          subtle: "#384259",
+          default: '#0078D7',
+          subtle: '#384259',
         },
       },
     },
@@ -24,38 +24,38 @@ const hostConfig = {
 
 const generateAdaptiveCard = (message, loading) => {
   return {
-    type: "AdaptiveCard",
+    type: 'AdaptiveCard',
     body: [
       {
-        type: "Container",
+        type: 'Container',
         items: [
           {
-            type: "Image",
+            type: 'Image',
             url: logo,
-            size: "Small",
-            style: "Person",
-            horizontalAlignment: "Left",
+            size: 'Small',
+            style: 'Person',
+            horizontalAlignment: 'Left',
           },
           {
-            type: "TextBlock",
-            text: "Blue Bot",
-            weight: "Bolder",
+            type: 'TextBlock',
+            text: 'Blue Bot',
+            weight: 'Bolder',
             wrap: true,
-            horizontalAlignment: "Left",
-            spacing: "Small",
+            horizontalAlignment: 'Left',
+            spacing: 'Small',
           },
           {
-            type: "TextBlock",
-            text: message + (loading ? "..." : ""),
+            type: 'TextBlock',
+            text: message + (loading ? '...' : ''),
             wrap: true,
-            horizontalAlignment: "Left",
+            horizontalAlignment: 'Left',
           },
         ],
-        spacing: "Medium",
+        spacing: 'Medium',
       },
     ],
-    $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
-    version: "1.3",
+    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+    version: '1.3',
   };
 };
 
@@ -65,7 +65,7 @@ const AdaptiveCardRenderer = ({ card }) => {
   useEffect(() => {
     if (cardRef.current) {
       try {
-        cardRef.current.innerHTML = "";
+        cardRef.current.innerHTML = '';
 
         const adaptiveCard = new AdaptiveCards.AdaptiveCard();
         adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
@@ -73,8 +73,8 @@ const AdaptiveCardRenderer = ({ card }) => {
         const renderedCard = adaptiveCard.render();
         cardRef.current.appendChild(renderedCard);
       } catch (error) {
-        console.error("Adaptive Card rendering error:", error);
-        cardRef.current.innerHTML = "<p>Error rendering card.</p>";
+        console.error('Adaptive Card rendering error:', error);
+        cardRef.current.innerHTML = '<p>Error rendering card.</p>';
       }
     }
   }, [card]);
