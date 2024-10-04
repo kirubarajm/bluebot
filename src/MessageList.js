@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useMemo } from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Box, Typography, IconButton } from '@mui/material';
 import logo from './images/logo.png';
 import profileAvatar from './images/dp.jpeg';
 import StreamingMessage from './StreamingMessage';
 import * as AdaptiveCards from 'adaptivecards';
 import { v4 as uuidv4 } from 'uuid';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const hostConfig = {
   fontFamily: 'Segoe UI, Helvetica Neue, sans-serif',
@@ -89,12 +90,33 @@ const AdaptiveCardRenderer = ({ card }) => {
 
 function MessageList({ messages, streamingMessage, loading }) {
   const bottomRef = useRef(null);
+  const containerRef = useRef(null);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'auto' });
     }
   }, [messages, streamingMessage]);
+
+  // Hook to handle visibility of 'scroll to bottom' icon
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = container;
+        setShowScrollButton(scrollHeight - scrollTop - clientHeight > 20);
+      };
+
+      container.addEventListener('scroll', handleScroll);
+      handleScroll(); // Check initial scroll position
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const formatMessage = (msg, index) => {
     const isUser = msg.role === 'user' || msg.sender === 'You';
@@ -114,9 +136,12 @@ function MessageList({ messages, streamingMessage, loading }) {
 
   return (
     <Box
+      ref={containerRef}
       sx={{
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'column',
+        height: '100%',
+        position: 'relative',
         overflowY: 'auto',
         '::-webkit-scrollbar': { display: 'none' },
         scrollbarWidth: 'none',
@@ -128,7 +153,8 @@ function MessageList({ messages, streamingMessage, loading }) {
           px: 2,
           width: '80%',
           mt: '20px',
-          maxHeight: '100%',
+          alignSelf: 'center',
+          flexGrow: 1,
         }}
       >
         {messages.length === 0 && !streamingMessage ? (
@@ -175,6 +201,23 @@ function MessageList({ messages, streamingMessage, loading }) {
         )}
         <Box ref={bottomRef} sx={{ minHeight: '20px' }}></Box>
       </Box>
+      {showScrollButton && (
+        <IconButton
+          color="primary"
+          onClick={scrollToBottom}
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            backgroundColor: 'background.paper',
+            '&:hover': {
+              backgroundColor: 'action.hover',
+            },
+          }}
+        >
+          <KeyboardArrowDownIcon />
+        </IconButton>
+      )}
     </Box>
   );
 }
