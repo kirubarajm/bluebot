@@ -155,6 +155,9 @@ function MessageList({ messages, streamingMessage, loading }) {
           mt: '20px',
           alignSelf: 'center',
           flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
         }}
       >
         {messages.length === 0 && !streamingMessage ? (
