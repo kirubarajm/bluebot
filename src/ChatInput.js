@@ -35,7 +35,7 @@ function ChatInput({ addMessage, loading }) {
         justifyContent: 'center',
       }}
     >
-      <Box sx={{ width: '53%' }}>
+      <Box sx={{ width: '65%' }}>
         <TextField
           placeholder="Message Blue Bot"
           fullWidth

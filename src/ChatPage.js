@@ -115,7 +115,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
                 mb: '40px',
               }}
             >
-              <>
+              {/* <>
                 <FastQuestion
                   addMessage={addMessage}
                   question="What is Blue Yonder?"
@@ -128,7 +128,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
                   addMessage={addMessage}
                   question="What is ERP optimization?"
                 />
-              </>
+              </> */}
             </Box>
           </Box>
           <ChatInput addMessage={addMessage} loading={loading} />
