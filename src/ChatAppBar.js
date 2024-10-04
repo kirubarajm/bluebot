@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Box } from '@mui/material';
+import { AppBar, Toolbar, Box, Typography } from '@mui/material';
 import logo from './images/logo.png';
 
 function ChatAppBar() {
@@ -15,6 +15,18 @@ function ChatAppBar() {
           alt="Logo"
           sx={{ height: '50px', mr: 2 }}
         />
+        <Typography 
+          variant="h6" 
+          component="div" 
+          sx={{ 
+            flexGrow: 1, 
+            color: '#ffffff',
+            fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
+            fontWeight: 'bold'
+          }}
+        >
+          Blue Bot 1.0 - By Kirubaraj
+        </Typography>
       </Toolbar>
     </AppBar>
   );

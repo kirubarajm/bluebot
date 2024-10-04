@@ -66,6 +66,7 @@ function ChatInput({ addMessage, loading }) {
             '& .MuiOutlinedInput-input': {
               color: '#7a877e',
               paddingLeft: '8px',
+              fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
             },
           }}
           InputProps={{
@@ -76,6 +77,7 @@ function ChatInput({ addMessage, loading }) {
                 </IconButton>
               </InputAdornment>
             ),
+            style: { fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif' },
           }}
         />
       </Box>

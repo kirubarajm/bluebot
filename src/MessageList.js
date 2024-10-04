@@ -1,79 +1,119 @@
 import React, { useEffect, useRef, useMemo } from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import logo from './images/logo.png';
-import geneAvatar from './images/dp.jpeg';
-import LoadingDots from './LoadingDots';
+import profileAvatar from './images/dp.jpeg';
 import StreamingMessage from './StreamingMessage';
+import * as AdaptiveCards from 'adaptivecards';
+import { v4 as uuidv4 } from 'uuid';
 
-function trimReactNode(node) {
-  if (typeof node === 'string') {
-    return node.trim();
-  }
-  if (React.isValidElement(node)) {
-    const newChildren = React.Children.map(node.props.children, trimReactNode);
-    return React.cloneElement(node, {}, newChildren);
-  }
-  if (Array.isArray(node)) {
-    return node.map(trimReactNode);
-  }
-  return node;
-}
+const hostConfig = {
+  fontFamily: "Segoe UI, Helvetica Neue, sans-serif",
+  containerStyles: {
+    default: {
+      foregroundColors: {
+        default: {
+          default: "#ffffff",
+          subtle: "#cccccc",
+        },
+        accent: {
+          default: "#0078D7",
+          subtle: "#384259",
+        },
+      },
+    },
+  },
+};
+
+const generateAdaptiveCard = (msg, isUser) => {
+  const senderName = isUser ? 'You' : 'Blue Bot';
+  const avatar = isUser ? profileAvatar : logo;
+  
+  return {
+    type: "AdaptiveCard",
+    body: [
+      {
+        type: "Container",
+        items: [
+          {
+            type: "Image",
+            url: avatar,
+            size: "Small",
+            style: "Person",
+            horizontalAlignment: isUser ? "Right" : "Left",
+          },
+          {
+            type: "TextBlock",
+            text: senderName,
+            weight: "Bolder",
+            wrap: true,
+            horizontalAlignment: isUser ? "Right" : "Left",
+            spacing: "Small",
+          },
+          {
+            type: "TextBlock",
+            text: msg.message,
+            wrap: true,
+            horizontalAlignment: isUser ? "Right" : "Left",
+          },
+        ],
+        spacing: "Medium",
+      },
+    ],
+    $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
+    version: "1.3",
+  };
+};
+
+const AdaptiveCardRenderer = ({ card }) => {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (cardRef.current) {
+      try {
+        cardRef.current.innerHTML = "";
+
+        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
+        adaptiveCard.parse(card);
+        const renderedCard = adaptiveCard.render();
+        cardRef.current.appendChild(renderedCard);
+      } catch (error) {
+        console.error("Adaptive Card rendering error:", error);
+        cardRef.current.innerHTML = "<p>Error rendering card.</p>";
+      }
+    }
+  }, [card]);
+
+  return <div ref={cardRef}></div>;
+};
 
 function MessageList({ messages, streamingMessage, loading }) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+      bottomRef.current.scrollIntoView({ behavior: 'auto' });
     }
   }, [messages, streamingMessage]);
 
   const formatMessage = (msg, index) => {
-    if (msg.role === 'user') {
-      msg.sender = 'You';
-    }
-    msg.text = msg.message;
-    const isUser = msg.sender === 'You';
-    const senderName = isUser ? 'You' : 'Finnly';
+    const isUser = msg.role === 'user' || msg.sender === 'You';
+    const adaptiveCard = generateAdaptiveCard(msg, isUser);
 
     return (
-      <Stack
-        key={index}
-        direction="row"
-        spacing={1}
-        alignItems="flex-start"
-        sx={{ mb: 6 }}
+      <Box
+        key={uuidv4()}
+        sx={{ mb: 4 }}
       >
-        {senderName === 'Finnly' && (
-          <img src={logo} alt="Logo" style={{ height: '50px' }} />
-        )}
-        <Box
-          sx={{
-            color: '#f7f7f7',
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            padding: '20px',
-            borderRadius: '20px',
-            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
-            width: '100%',
-          }}
-        >
-          <Typography sx={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-            {trimReactNode(msg?.text)}
-            {senderName === 'Finnly' &&
-              loading &&
-              index === messages.length && <LoadingDots />}
-          </Typography>
-        </Box>
-        {senderName === 'You' && (
-          <img
-            src={geneAvatar}
-            alt="Avatar"
-            style={{ height: '50px', borderRadius: '50%' }}
-          />
-        )}
-      </Stack>
+        <AdaptiveCardRenderer card={adaptiveCard} />
+      </Box>
     );
   };
+
+  // Memoize the formatted messages
+  const memoizedMessages = useMemo(() => {
+    return messages.map((msg, index) => formatMessage(msg, index));
+  }, [messages]);
 
   return (
     <Box
@@ -110,15 +150,26 @@ function MessageList({ messages, streamingMessage, loading }) {
               alt="No messages"
               style={{ width: '100px', height: '100px' }}
             />
-            <Typography variant="h5" sx={{ mt: 2, fontWeight: 'bold' }}>
-              How can I help you today?
-            </Typography>
+            <Typography 
+          variant="h5" 
+          component="div" 
+          sx={{ 
+            flexGrow: 1, 
+            color: '#ffffff',
+            fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
+            fontWeight: 'bold'
+          }}
+        >
+          How can I help you today ?
+        </Typography>
           </Box>
         ) : (
           <>
-            {messages.map((msg, index) => formatMessage(msg, index))}
+            {memoizedMessages}
             {streamingMessage && (
-              <StreamingMessage message={streamingMessage} loading={loading} />
+              <Box sx={{ mb: 4 }}>
+                <StreamingMessage message={streamingMessage} loading={loading} />
+              </Box>
             )}
           </>
         )}

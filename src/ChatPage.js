@@ -118,11 +118,15 @@ function ChatPage({ chatHistory, updateChatHistory }) {
               <>
                 <FastQuestion
                   addMessage={addMessage}
-                  question="Write a python program to find diameter of a graph"
+                  question="What is Blue Yonder?"
                 />
                 <FastQuestion
                   addMessage={addMessage}
-                  question="What is Blue Yonder?"
+                  question="What is Blue Yonder's business model?"
+                />
+                <FastQuestion
+                  addMessage={addMessage}
+                  question="What is ERP optimization?"
                 />
               </>
             </Box>
