@@ -39,8 +39,8 @@ function ChatInput({ addMessage, loading }) {
         sx={{
           width: {
             xs: '100%', // Full width on extra-small screens (mobile)
-            sm: '80%',  // 80% width on small screens
-            md: '65%',  // 65% width on medium screens and above (web)
+            sm: '80%', // 80% width on small screens
+            md: '65%', // 65% width on medium screens and above (web)
           },
         }}
       >
