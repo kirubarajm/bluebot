@@ -4,13 +4,7 @@ import ChatAppBar from '../components/common/ChatAppBar';
 import MessageList from '../components/messages/MessageList';
 import ChatInput from '../components/common/ChatInput';
 import FastQuestion from '../components/common/FastQuestion';
-import OpenAI from 'openai';
-import { prepareMessages } from '../backend/contextManager';
-
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+import { sendMessageToOpenAI } from '../backend/backend';
 
 function ChatPage({ chatHistory, updateChatHistory }) {
   const [loading, setLoading] = useState(false);
@@ -22,31 +16,23 @@ function ChatPage({ chatHistory, updateChatHistory }) {
     updateChatHistory((prevHistory) => [...prevHistory, { ...data }]);
   };
 
-  const sendMessageToOpenAI = async (message) => {
+  const sendMessage = async (message) => {
     setLoading(true);
     setStreamingMessage('');
     streamingMessageRef.current = '';
 
     try {
-      const preparedMessages = prepareMessages(chatHistory, message);
-
-      const stream = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: preparedMessages,
-        stream: true,
-      });
-
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content || '';
-        if (content) {
-          streamingMessageRef.current += content;
-          setStreamingMessage(streamingMessageRef.current);
+      const response = await sendMessageToOpenAI(
+        chatHistory,
+        message,
+        (streamContent) => {
+          streamingMessageRef.current = streamContent;
+          setStreamingMessage(streamContent);
         }
-      }
+      );
 
-      // Add the complete message to chat history after streaming is done
       addMessage({
-        message: streamingMessageRef.current,
+        message: response,
         sender: 'AI',
         type: 'text',
       });
@@ -72,7 +58,7 @@ function ChatPage({ chatHistory, updateChatHistory }) {
       lastMessage.sender === 'You' &&
       lastMessage.type === 'text'
     ) {
-      sendMessageToOpenAI(lastMessage.message);
+      sendMessage(lastMessage.message);
     }
   }, [chatHistory]);
 
