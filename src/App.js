@@ -1,9 +1,9 @@
 import React from 'react';
-import Home from './Home';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <div className="App">
+    <div style={{ textAlign: 'center' }}>
       <Home />
     </div>
   );

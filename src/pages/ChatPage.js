@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
-import ChatAppBar from './ChatAppBar';
-import MessageList from './MessageList';
-import ChatInput from './ChatInput';
-import FastQuestion from './FastQuestion';
+import ChatAppBar from '../components/common/ChatAppBar';
+import MessageList from '../components/messages/MessageList';
+import ChatInput from '../components/common/ChatInput';
+import FastQuestion from '../components/common/FastQuestion';
 import OpenAI from 'openai';
-import { prepareMessages } from './utils/contextManager';
+import { prepareMessages } from '../backend/contextManager';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,

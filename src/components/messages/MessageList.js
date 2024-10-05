@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
-import logo from './images/logo.png';
-import profileAvatar from './images/dp.jpeg';
+import logo from '../../images/logo.png';
+import profileAvatar from '../../images/dp.jpeg';
 import StreamingMessage from './StreamingMessage';
 import * as AdaptiveCards from 'adaptivecards';
 import { v4 as uuidv4 } from 'uuid';

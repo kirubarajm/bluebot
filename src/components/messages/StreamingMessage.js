@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
-import logo from './images/logo.png';
-import LoadingDots from './LoadingDots';
+import logo from '../../images/logo.png';
+import LoadingDots from '../common/LoadingDots';
 import * as AdaptiveCards from 'adaptivecards';
 
 const hostConfig = {
