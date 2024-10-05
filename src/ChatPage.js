@@ -6,6 +6,7 @@ import ChatInput from './ChatInput';
 import FastQuestion from './FastQuestion';
 import OpenAI from 'openai';
 import { prepareMessages } from './utils/contextManager';
+import { extractCodeBlocks } from './utils/codeBlockExtractor';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -36,19 +37,26 @@ function ChatPage({ chatHistory, updateChatHistory }) {
         stream: true,
       });
 
+      let accumulatedMessage = '';
       for await (const chunk of stream) {
         const content = chunk.choices[0]?.delta?.content || '';
         if (content) {
-          streamingMessageRef.current += content;
-          setStreamingMessage(streamingMessageRef.current);
+          accumulatedMessage += content;
+          streamingMessageRef.current = accumulatedMessage;
+          setStreamingMessage(accumulatedMessage);
+          // console.log(accumulatedMessage)
         }
       }
 
+      // console.log("Final Message", accumulatedMessage)
+      const codeBlocks = extractCodeBlocks(accumulatedMessage);
+
       // Add the complete message to chat history after streaming is done
       addMessage({
-        message: streamingMessageRef.current,
+        message: accumulatedMessage,
         sender: 'AI',
         type: 'text',
+        codeBlocks: codeBlocks,
       });
     } catch (error) {
       console.error('Error:', error);

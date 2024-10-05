@@ -28,40 +28,59 @@ const hostConfig = {
 const generateAdaptiveCard = (msg, isUser) => {
   const senderName = isUser ? 'You' : 'Blue Bot';
   const avatar = isUser ? profileAvatar : logo;
+  console.log("MSG is : ", msg)
+
+  const bodyItems = [
+    {
+      type: 'Image',
+      url: avatar,
+      size: 'Small',
+      style: 'Person',
+      horizontalAlignment: isUser ? 'Right' : 'Left',
+    },
+    {
+      type: 'TextBlock',
+      text: senderName,
+      weight: 'Bolder',
+      wrap: true,
+      horizontalAlignment: isUser ? 'Right' : 'Left',
+      spacing: 'Small',
+    },
+  ];
+
+  const messageParts = msg.message.split('```');
+  
+  messageParts.forEach((part, index) => {
+    if (index % 2 === 0) {
+      // This is regular text
+      bodyItems.push({
+        type: 'TextBlock',
+        text: part.trim(),
+        wrap: true,
+        horizontalAlignment: isUser ? 'Right' : 'Left',
+      });
+    } else {
+      // This is a code block
+      const codeBlock = msg.codeBlocks[(index - 1) / 2];
+      bodyItems.push({
+        type: 'CodeBlock',
+        codeSnippet: codeBlock.code,
+        language: codeBlock.language || 'plaintext',
+      });
+    }
+  });
+
+  console.log("BODYITEMS is : ", bodyItems)
+  console.log("RETURN VALUE IS : ", {type: 'AdaptiveCard',
+    body: bodyItems,
+    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+    version: '1.5',})
 
   return {
     type: 'AdaptiveCard',
-    body: [
-      {
-        type: 'Container',
-        items: [
-          {
-            type: 'Image',
-            url: avatar,
-            size: 'Small',
-            style: 'Person',
-            horizontalAlignment: isUser ? 'Right' : 'Left',
-          },
-          {
-            type: 'TextBlock',
-            text: senderName,
-            weight: 'Bolder',
-            wrap: true,
-            horizontalAlignment: isUser ? 'Right' : 'Left',
-            spacing: 'Small',
-          },
-          {
-            type: 'TextBlock',
-            text: msg.message,
-            wrap: true,
-            horizontalAlignment: isUser ? 'Right' : 'Left',
-          },
-        ],
-        spacing: 'Medium',
-      },
-    ],
+    body: bodyItems,
     $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-    version: '1.3',
+    version: '1.5',
   };
 };
 

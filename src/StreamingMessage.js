@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import logo from './images/logo.png';
 import LoadingDots from './LoadingDots';
 import * as AdaptiveCards from 'adaptivecards';
+import { extractCodeBlocks } from './utils/codeBlockExtractor';
 
 const hostConfig = {
   fontFamily: 'Segoe UI, Helvetica Neue, sans-serif',
@@ -23,39 +24,69 @@ const hostConfig = {
 };
 
 const generateAdaptiveCard = (message, loading) => {
+  const codeBlocks = extractCodeBlocks(message);
+  // console.log("STREAMED MESSAGE : ", message)
+  // console.log("STREAMED CODE BLOCKS : ", codeBlocks)
+  const bodyItems = [
+    {
+      type: 'Image',
+      url: logo,
+      size: 'Small',
+      style: 'Person',
+      horizontalAlignment: 'Left',
+    },
+    {
+      type: 'TextBlock',
+      text: 'Blue Bot',
+      weight: 'Bolder',
+      wrap: true,
+      horizontalAlignment: 'Left',
+      spacing: 'Small',
+    },
+  ];
+
+  if (codeBlocks.length > 0) {
+    codeBlocks.forEach((block, index) => {
+      bodyItems.push({
+        type: 'TextBlock',
+        text: message.split('```')[index * 2],
+        wrap: true,
+        horizontalAlignment: 'Left',
+      });
+      bodyItems.push({
+        type: 'CodeBlock',
+        codeSnippet: block.code,
+        language: block.language || 'plaintext',
+      });
+    });
+    if (message.split('```').length % 2 === 0) {
+      bodyItems.push({
+        type: 'TextBlock',
+        text: message.split('```').pop() + (loading ? '...' : ''),
+        wrap: true,
+        horizontalAlignment: 'Left',
+      });
+    }
+  } else {
+    bodyItems.push({
+      type: 'TextBlock',
+      text: message + (loading ? '...' : ''),
+      wrap: true,
+      horizontalAlignment: 'Left',
+    });
+  }
+
   return {
     type: 'AdaptiveCard',
     body: [
       {
         type: 'Container',
-        items: [
-          {
-            type: 'Image',
-            url: logo,
-            size: 'Small',
-            style: 'Person',
-            horizontalAlignment: 'Left',
-          },
-          {
-            type: 'TextBlock',
-            text: 'Blue Bot',
-            weight: 'Bolder',
-            wrap: true,
-            horizontalAlignment: 'Left',
-            spacing: 'Small',
-          },
-          {
-            type: 'TextBlock',
-            text: message + (loading ? '...' : ''),
-            wrap: true,
-            horizontalAlignment: 'Left',
-          },
-        ],
+        items: bodyItems,
         spacing: 'Medium',
       },
     ],
     $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-    version: '1.3',
+    version: '1.5',
   };
 };
 
