@@ -5,6 +5,7 @@ import MessageList from '../components/messages/MessageList';
 import ChatInput from '../components/common/ChatInput';
 import FastQuestion from '../components/common/FastQuestion';
 import { sendMessageToOpenAI } from '../backend/backend';
+import { extractCodeBlocks } from '../utils/codeBlockExtractor';
 
 function ChatPage({ chatHistory, updateChatHistory }) {
   const [loading, setLoading] = useState(false);
@@ -22,19 +23,24 @@ function ChatPage({ chatHistory, updateChatHistory }) {
     streamingMessageRef.current = '';
 
     try {
-      const response = await sendMessageToOpenAI(
-        chatHistory,
-        message,
-        (streamContent) => {
-          streamingMessageRef.current = streamContent;
-          setStreamingMessage(streamContent);
-        }
-      );
+      let accumulatedMessage = '';
+      await sendMessageToOpenAI(chatHistory, message, (streamContent) => {
+        if (streamContent === null) {
+          // Stream has ended, process the full message
+          const codeBlocks = extractCodeBlocks(accumulatedMessage);
 
-      addMessage({
-        message: response,
-        sender: 'AI',
-        type: 'text',
+          addMessage({
+            message: accumulatedMessage,
+            sender: 'AI',
+            type: 'text',
+            codeBlocks: codeBlocks,
+          });
+        } else {
+          // Process each chunk of the stream
+          accumulatedMessage += streamContent;
+          streamingMessageRef.current = accumulatedMessage;
+          setStreamingMessage(accumulatedMessage);
+        }
       });
     } catch (error) {
       console.error('Error:', error);

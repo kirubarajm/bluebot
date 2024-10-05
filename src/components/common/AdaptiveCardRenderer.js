@@ -19,27 +19,26 @@ const hostConfig = {
   },
 };
 
-const AdaptiveCardRenderer = ({ card }) => {
+function AdaptiveCardRenderer({ card, onExecuteAction }) {
   const cardRef = useRef(null);
 
   useEffect(() => {
     if (cardRef.current) {
-      try {
-        cardRef.current.innerHTML = '';
+      const adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
-        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
-        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
-        adaptiveCard.parse(card);
-        const renderedCard = adaptiveCard.render();
-        cardRef.current.appendChild(renderedCard);
-      } catch (error) {
-        console.error('Adaptive Card rendering error:', error);
-        cardRef.current.innerHTML = '<p>Error rendering card.</p>';
-      }
+      adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(hostConfig);
+
+      adaptiveCard.onExecuteAction = onExecuteAction;
+
+      adaptiveCard.parse(card);
+      const renderedCard = adaptiveCard.render();
+
+      cardRef.current.innerHTML = '';
+      cardRef.current.appendChild(renderedCard);
     }
-  }, [card]);
+  }, [card, onExecuteAction]);
 
   return <div ref={cardRef}></div>;
-};
+}
 
 export default AdaptiveCardRenderer;

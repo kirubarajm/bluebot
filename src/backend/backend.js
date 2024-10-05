@@ -48,17 +48,15 @@ export const sendMessageToOpenAI = async (
       stream: true,
     });
 
-    let fullResponse = '';
-
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
-        fullResponse += content;
-        onStreamUpdate(fullResponse);
+        onStreamUpdate(content);
       }
     }
 
-    return fullResponse;
+    // Signal the end of the stream
+    onStreamUpdate(null);
   } catch (error) {
     console.error('Error:', error);
     throw new Error('An error occurred while fetching the response.');

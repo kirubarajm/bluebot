@@ -7,10 +7,29 @@ import { v4 as uuidv4 } from 'uuid';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AdaptiveCardRenderer from '../common/AdaptiveCardRenderer';
 
-
 const generateAdaptiveCard = (msg, isUser) => {
   const senderName = isUser ? 'You' : 'Blue Bot';
   const avatar = isUser ? profileAvatar : logo;
+
+  const actions = [];
+
+  if (!isUser) {
+    actions.push({
+      type: 'Action.Execute',
+      title: 'Copy Message',
+      verb: 'copyMessage',
+      data: { message: msg.message },
+    });
+
+    if (msg.codeBlocks && msg.codeBlocks.length > 0) {
+      actions.push({
+        type: 'Action.Execute',
+        title: 'Copy Code',
+        verb: 'copyCode',
+        data: { codeBlocks: msg.codeBlocks },
+      });
+    }
+  }
 
   return {
     type: 'AdaptiveCard',
@@ -43,8 +62,9 @@ const generateAdaptiveCard = (msg, isUser) => {
         spacing: 'Medium',
       },
     ],
+    actions: actions,
     $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-    version: '1.3',
+    version: '1.4',
   };
 };
 
@@ -78,13 +98,34 @@ function MessageList({ messages, streamingMessage, loading }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleExecuteAction = (action) => {
+    switch (action.verb) {
+      case 'copyMessage':
+        navigator.clipboard.writeText(action.data.message);
+        // console.log(action.data.message)
+        break;
+      case 'copyCode':
+        const codeText = action.data.codeBlocks
+          .map((block) => block.code)
+          .join('\n\n');
+        navigator.clipboard.writeText(codeText);
+        // console.log(codeText)
+        break;
+      default:
+        console.log('Unhandled action:', action);
+    }
+  };
+
   const formatMessage = (msg, index) => {
     const isUser = msg.role === 'user' || msg.sender === 'You';
     const adaptiveCard = generateAdaptiveCard(msg, isUser);
 
     return (
       <Box key={uuidv4()} sx={{ mb: 4 }}>
-        <AdaptiveCardRenderer card={adaptiveCard} />
+        <AdaptiveCardRenderer
+          card={adaptiveCard}
+          onExecuteAction={handleExecuteAction}
+        />
       </Box>
     );
   };
