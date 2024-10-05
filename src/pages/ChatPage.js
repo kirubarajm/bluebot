@@ -9,7 +9,6 @@ import { extractCodeBlocks } from '../utils/codeBlockExtractor';
 
 function ChatPage({ chatHistory, updateChatHistory }) {
   const [loading, setLoading] = useState(false);
-
   const [streamingMessage, setStreamingMessage] = useState('');
   const streamingMessageRef = useRef('');
 
@@ -98,31 +97,34 @@ function ChatPage({ chatHistory, updateChatHistory }) {
           loading={loading}
         />
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box
-              sx={{
-                width: '50%',
-                display: 'flex',
-                justifyContent: 'start',
-                mb: '40px',
-              }}
-            >
-              <>
+          {chatHistory.length === 0 && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  width: { xs: '100%', sm: '50%' },
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: '40px',
+                  gap: 2,
+                }}
+              >
                 <FastQuestion
                   addMessage={addMessage}
                   question="What is Blue Yonder?"
                 />
                 <FastQuestion
                   addMessage={addMessage}
-                  question="What is Blue Yonder's business model?"
+                  question="Write hello world in python."
                 />
-                <FastQuestion
+                {/* <FastQuestion
                   addMessage={addMessage}
                   question="What is ERP optimization?"
-                />
-              </>
+                /> */}
+              </Box>
             </Box>
-          </Box> */}
+          )}
           <ChatInput addMessage={addMessage} loading={loading} />
         </Box>
       </Box>
