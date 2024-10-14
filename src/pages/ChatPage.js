@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ChatAppBar from '../components/common/ChatAppBar';
 import MessageList from '../components/messages/MessageList';
@@ -10,7 +10,6 @@ import { extractCodeBlocks } from '../utils/codeBlockExtractor';
 function ChatPage({ chatHistory, updateChatHistory }) {
   const [loading, setLoading] = useState(false);
   const [streamingMessage, setStreamingMessage] = useState('');
-  const streamingMessageRef = useRef('');
 
   const addMessage = (data) => {
     updateChatHistory((prevHistory) => [...prevHistory, { ...data }]);
@@ -19,7 +18,6 @@ function ChatPage({ chatHistory, updateChatHistory }) {
   const sendMessage = async (message) => {
     setLoading(true);
     setStreamingMessage('');
-    streamingMessageRef.current = '';
 
     try {
       let accumulatedMessage = '';
@@ -37,7 +35,6 @@ function ChatPage({ chatHistory, updateChatHistory }) {
         } else {
           // Process each chunk of the stream
           accumulatedMessage += streamContent;
-          streamingMessageRef.current = accumulatedMessage;
           setStreamingMessage(accumulatedMessage);
         }
       });

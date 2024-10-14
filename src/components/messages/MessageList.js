@@ -85,6 +85,7 @@ function MessageList({ messages, streamingMessage, loading }) {
     if (container) {
       const handleScroll = () => {
         const { scrollTop, scrollHeight, clientHeight } = container;
+        // If at least 20 pixel of scrollable space is left in the current viewport, set to True
         setShowScrollButton(scrollHeight - scrollTop - clientHeight > 20);
       };
 
